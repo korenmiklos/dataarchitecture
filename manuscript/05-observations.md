@@ -24,7 +24,7 @@ A> Across-group variation of means
 
 Groups may themselves be related in hierarchies. The best known hierarchy is that of spatial administrative units: cities, states and countries. In our sensor data, each measurement belongs to one sensor. Then each sensor belongs to a country. (It does not belong to a city because they are typically outside city boundaries.) 
 
-Statistical classifications also tend be hierarchical. Statisticians love hierarchies! They divide economic activity into broad sectors like manufacturing and construction. Within manufacturing, you may work in "food products and beverages," or "textiles." Within food products, you may be producing dairy or meat. And so forth.
+__Statistical classifications__ also tend be hierarchical. Statisticians love hierarchies! They divide economic activity into broad sectors like manufacturing and construction. Within manufacturing, you may work in "food products and beverages," or "textiles." Within food products, you may be producing dairy or meat. And so forth.
 
 A> # International family of classifications
 A> The [_international family of classifications_](https://unstats.un.org/unsd/classifications/Family/ListByDomain#2) is maintained by the Statistics Division of the UN. There is a classification of family status ("married", "single" doesn't cut it), a classification of fish species, a classification of tourist activities ("stag parties" not being one of them), even a classification of classifications! This is a useful website if you want to nerd out, or if you need to convert between different classifications.
@@ -38,8 +38,8 @@ If you do aggregate up, make sure to respect the hierarchy and only group observ
 Note that classification codes often write out the leading zero. Reading in such codes as numeric and losing the leading zero has confused me quite a number of times. (Also see Chapter XX on choosing good numerical keys.)
 
 {icon: database}
-A> ![A part of food and beverage manufacturing](images/isic-example.png)
-A> [ISIC Revision 3.1.](https://unstats.un.org/unsd/statcom/doc02/isic.pdf)
+B> ![A part of food and beverage manufacturing](images/isic-example.png)
+B> [ISIC Revision 3.1.](https://unstats.un.org/unsd/statcom/doc02/isic.pdf)
 
 ## Time
 
@@ -60,8 +60,9 @@ What if your observation represents an __interval in time__? A manager has serve
 This is where things get tricky! Did you know that there are 13 different relations between time intervals? A may _take place before_ B, they may _overlap_, it may _finish_ B, and so forth. Allen's interval algebra captures these relations formally (see [box](#allen-algebra)). 
 
 {icon: wikipedia-w, #allen-algebra}
-B> # [Allen's interval algebra](https://en.wikipedia.org/wiki/Allen%27s_interval_algebra)
-B> ![X overlaps with Y](https://en.wikipedia.org/wiki/Allen%27s_interval_algebra#/media/File:Allen_calculus_overlap.png)
+B> ## [Allen's interval algebra](https://en.wikipedia.org/wiki/Allen%27s_interval_algebra)
+{caption: X overlaps with Y}
+![](https://en.wikipedia.org/wiki/Allen%27s_interval_algebra#/media/File:Allen_calculus_overlap.png)
 
 This is confusing, but you are unlikely to need all these possible relations. You will need to measure which interval is earlier (ranking the start time of intervals, for example), and to measure overlap. For example, have Margaret and Dan served at the firm at the same time? This is a question of __overlap__. Can Margaret be responsible for hiring Dan? Has she arrived earlier than him? This is a question of __precedence__.
 
@@ -73,7 +74,7 @@ T> You may be tempted to sample your data at dates like January 1 or December 31
 A practical consideration is __date and time format__. Years, months, days, hours, minutes, seconds and milliseconds can written a myriad ways, and you will encounter each of these in data in the wild. Luckily, there is an ISO standard for dates and times: ISO 8601. When seeing date and time related fields, your _first_ task is always to convert it to ISO 8601.
 
 {icon: wikipedia-w}
-B> # ISO 8601
+B> ## ISO 8601
 B> `2018-09-16T12:10Z`
 
 
@@ -81,5 +82,5 @@ B> `2018-09-16T12:10Z`
 ## Space
 
 {icon: wikipedia-w}
-G> https://en.wikipedia.org/wiki/Spatial_relation
+B> https://en.wikipedia.org/wiki/Spatial_relation
 
