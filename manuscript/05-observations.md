@@ -98,10 +98,13 @@ The first business of understanding spatial relations is to understand the type 
 
 Getting from human-readable addresses to machine-readable GPS coordinates is called __geocoding__. We do this every day when we enter addresses in Google Maps. To do this in a scalable way for all the observations in your dataset, you need a geocoding service. Google Maps has an API, but only allows geocoding for the purposes of showing points on their maps. For bulk geocoding you should turn to other providers such as [Nominatim](https://nominatim.openstreetmap.org/), using OpenStreetMap data.
 
-A> ## Methods aside
-A> ## Projections: Spatial Reference Systems
-A> What shape they assume. Many SRS, they each have an ID. By far the most widely used is the [World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84), WGS84, which has an SRID of 4326.
+A> ## Projections and Spatial Reference Systems
+A> Geocoding convert addresses to a pair of coordinates: latitude and longitude. But what do these coordinates mean? Since two numbers represent a plane, the problem is how to map points on the surface of the Earth (which, contrary to some claims, is not flat) to points on a flat plane. This mapping is called a __projection__. There are many projections, depending on what shapes they assume about the Earth, which is slighly different from a perfect sphere. Yes, there is a classification of projections, called the [Spatial Reference System Identifier](https://en.wikipedia.org/wiki/Spatial_reference_system). By far the most widely used is the [World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84), WGS84, which has an SRID of 4326. This is what you see in Google Maps and in your GPS. (Mercator projection is what you see on old printed maps, where Greenland looks larger than Africa. Don't ever use Mercator in real data.)
 
-__GIS__
+If you regularly work with spatial data, you should invest in knowing more about __geographic information systems__ (GIS). There are specialized GIS software to map spatial data or do spatial analysis, such as ESRI ArcGIS, MapInfo, or the open source Quantum GIS. Many database management tools also implement spatial queries, so you can easily select "all gas stations within 10km of this road."
 
-Different file formats. Shapefiles, WKT, GeoJSON.
+Whereas points in space can easily be represented by just two numbers, richer spatial features require their special file format. [Well-known text](https://en.wikipedia.org/wiki/Well-known_text) provides a simple text representation of spatial features, such as `LINESTRING (30 10, 10 30, 40 40)`. This is very intuitive, but not very helpful in practice, where lines and polygons have thousands of vertices. [GeoJSON](https://en.wikipedia.org/wiki/GeoJSON) is an open standard extension of JSON. If you are used to working with web apps and JSON data, convert your spatial information to the GeoJSON standard. By now all major GIS packages can read (and write?) GeoJSON. There is also the proprietary binary file format of ESRI Shapefiles. These are widely used because of the ubiquity of the ArcGIS software package. The US Bureau of the Census, for example, published the [boundaries of Census tracts](https://www.census.gov/geo/maps-data/data/tiger-line.html) in ESRI Shapefiles.  
+
+D> Too mcuh implementation detail here? We have not even studied JSON.
+
+## Network
