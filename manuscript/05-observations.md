@@ -73,14 +73,35 @@ T> You may be tempted to sample your data at dates like January 1 or December 31
 
 A practical consideration is __date and time format__. Years, months, days, hours, minutes, seconds and milliseconds can written a myriad ways, and you will encounter each of these in data in the wild. Luckily, there is an ISO standard for dates and times: ISO 8601. When seeing date and time related fields, your _first_ task is always to convert it to ISO 8601.
 
+Many database management tools implement what is called a [__temporal database__](https://en.wikipedia.org/wiki/Temporal_database), capturing the time spell for which an entity or a relation is valid. This makes it easier to conduct temporal queries such as the examples above.
+
 {icon: wikipedia-w}
 B> ## ISO 8601
 B> `2018-09-16T12:10Z`
 
 
-
 ## Space
+
+Almost all measurements have a relevant spatial dimension, as well: the precise geocoordinates of the sensors, their state and country classification. If thinking about time intervals feels complicated, welcome to __spatial relations__. Where in time there are only points and intervals, there are many more different types of objects in space and many more different relations. An observation may be related to a point, such as a sensor, a line, such as a river or a highway, or an area (often called _polygon_ in spatial analysis) such as a city.
+
+These spatial entities may have many relations to one another. A sensor may be inside a city. A highway may intersect a river at a certain point. A highway may intersect the city. A river may serve as the boundary of the city.
+
+A> ## Methods aside
+A> A __point__ is given by a pair of coordinates (x,y). (We ignore 3D and only deal with the surface of the Earth.) A __line__ is a list of connected points (x1,y1)-(x2,y2)-... An __area__ is a polygon surrounded by a closed line, (x1,y1)-(x2,y2)-...-(x1,y1).
+A> You can have a collection of each of these items. Countries are, often, a collection of exclaves.
+A> XX FIGURE
 
 {icon: wikipedia-w}
 B> https://en.wikipedia.org/wiki/Spatial_relation
 
+The first business of understanding spatial relations is to understand the type of spatial observations you have. Cities are not points, though they certainly have midpoints or centers which come up when you enter the city name in Google Maps. Cities are areas. Indeed, very few entities are actual points, though some can be reasonably approximated as such. A precise street address including the street number can be safely be approximated with its geocoordinates. 
+
+Getting from human-readable addresses to machine-readable GPS coordinates is called __geocoding__. We do this every day when we enter addresses in Google Maps. To do this in a scalable way for all the observations in your dataset, you need a geocoding service. Google Maps has an API, but only allows geocoding for the purposes of showing points on their maps. For bulk geocoding you should turn to other providers such as [Nominatim](https://nominatim.openstreetmap.org/), using OpenStreetMap data.
+
+A> ## Methods aside
+A> ## Projections: Spatial Reference Systems
+A> What shape they assume. Many SRS, they each have an ID. By far the most widely used is the [World Geodetic System](https://en.wikipedia.org/wiki/World_Geodetic_System#WGS84), WGS84, which has an SRID of 4326.
+
+__GIS__
+
+Different file formats. Shapefiles, WKT, GeoJSON.
