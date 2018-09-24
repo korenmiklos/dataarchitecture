@@ -9,7 +9,7 @@ But how do these keys look in real life? Are they consecutively numbering rows f
 
 Most importantly, keys should be _unique_, that is, no two different observations should receive the same key. This sounds obvious, but your design can make this requirement harder or easier to satisfy. Suppose you decide to refer to users by their last name (an obviously silly idea). After the second `smith` and `jones`, you will have to change your system. Then you decide to add first names. You are safe until the second `john_smith` or `charles_jones`. You'll end up with `john_smith_02`, which is just plain ugly. (And what if there are more than 99 John Smiths's in your data?) 
 
-If you think you would never commit such silly mistakes, read Patrick McKenzie's [list of 40 falsehoods](https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/) programmers often assume about names. I come from a country which uses the Eastern name order, uses many accented letters, and where wives' married names often do not include their first names (as in "Szabó Jánosné ~ "Mrs John Smith"). I've encountered people with only one name. How hard it is for them to enter their name into any web app or database?
+If you think you would never commit such silly mistakes, read Patrick McKenzie's [list of 40 falsehoods](https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/) programmers often assume about names. I come from a country which uses the Eastern name order, uses many accented letters, and where wives' married names often do not include their first names (as in "Szabó Jánosné" ~ "Mrs John Smith"). I've encountered people with only one name. How hard it is for them to enter their name into any web app or database?
 
 It gets worth with companies and organizations. It is next to impossible to use their correct name more than once. The municipal government of the Budapest district where my university is located is officially called "Belváros-Lipótváros Budapest Főváros V. kerület Polgármesteri Hivatal." How often do you think it is spelled right in databases? Moreover, there are 37 elementary schools in Hungary whose official name is simply "elementary school."
 
@@ -31,13 +31,13 @@ A> ## Example keys for firms and people
 A> `F-DE-01234567` is a German firm. `F-HU-12345678` is a Hungarian firm. (Note the use of 2-letter ISO-3166 country codes.) `P-1234567890` is a person.
 
 companies
-	:tax identifier, EIN, EU VAT identifier, Open Corporates ID
+: tax identifier, EIN, EU VAT identifier, Open Corporates ID
 individuals
-	:SSN, email address
+: SSN, email address
 regions
-	:FIPS, NUTS, ZIP-code (although a ZIP code does not refer to an _area_)
+: FIPS, NUTS, ZIP-code (although a ZIP code does not refer to an _area_)
 countries
-	:ISO 3166 standard, 2-letter, 3-letter or numeric identifier
+: ISO 3166 standard, 2-letter, 3-letter or numeric identifier
 
 
 ## Hierarchical keys
