@@ -30,12 +30,17 @@ Follow these four tips to create useful keys.
 A> ## Example keys for firms and people
 A> `F-DE-01234567` is a German firm. `F-HU-12345678` is a Hungarian firm. (Note the use of 2-letter ISO-3166 country codes.) `P-1234567890` is a person.
 
+Depending on the type of entity you are modeling, look out for these existing unique identifiers.
+
 companies
-: tax identifier, EIN, EU VAT identifier, Open Corporates ID
+: tax identifier, Employer Identification Number (EIN), EU VAT identifier, Open Corporates ID
+
 individuals
-: SSN, email address
+: Social Security Number, email address
+
 regions
 : FIPS, NUTS, ZIP-code (although a ZIP code does not refer to an _area_)
+
 countries
 : ISO 3166 standard, 2-letter, 3-letter or numeric identifier
 
@@ -44,6 +49,28 @@ countries
 
 
 ## Entity Resolution
+
+How do you get from "Charles Jones" to `P-1234567890`? In practically all of your data, you will face the question whether _this_ Charles Jones is the same as _that_ Charles Jones? Take the following entries from the Open Corporates database.
+
+{icon: database}
+B> similar names from OpenCorporates
+
+It seems that rows 1 and 2 refer to the same person, whereas row 3 refers to a different person. How do we know? More importantly, how do we make the computer know this?
+
+This problem is known as __entity resolution__, record linkage or deduplication. (It is different from _named entity recognition_, where you have to recognize entities in flow text.) It is as complicated as it looks. Names and other fields are misspelled, so if you are too strict, you fail to link two related observations. If you are too fuzzy, you mistakenly link unrelated observations.
+
+D> I feel like "variable" is not the right term. Nothing varies. Maybe stick to "field" throughout? How about "record" vs "observation"?
+
+The first guiding principle of entity resolution is to embrace the imperfections. There is no perfect method, you are just balancing two types of error. _False positives_ occur when you link two observations that, in reality, refer to two different entities. _False negatives_ occur when you fail to link two observations that, in reality, represent the same entity. You can always decrease one type of error at the expense of the other by selecting a more or less stringent matching method.
+
+The second guiding principle is to appreciate the computational complexity. If you are unsure about your data, you have to compare every observation with every other, making _N_(_N_-1)/2 comparisons in a dataset with _N_ observations. It is easy to see.... (See box on why it is sufficient to make _pairwise_ comparisons.)
+
+A> ## Methods aside
+A> An entity resolution defines groups of observations that belong to the same entity: `e={o1,o2,o3,...}`. Maybe surprisingly, it is sufficient to define when a _pair of observations_ denote the same entity, when `e(o1)=e(o2)`. Because equality is _transitive_, we can propagate the pairwise relation to the entire dataset: if `e(o1)=e(o2)` and `e(o2)=e(o3)` then `e(o1)=e(o3)` and `e={o1,o2,o3}`.
+A>
+A> With fuzzy matching, we cannot tell precisely whether the entities behind two observations are _equal_. We can just calculate a _distance_ between the two observations, `d(o1,o2)>=0`. The problem with this is that distances are not transitive: if `o1` and `o2` are "very close" and so are `o2` and `o3`, that does not make `o1` and `o3` "very close." We have the _triangle inequality_, `d(o_1,o_3)\le d(o_1,o_2)+d(o_2,o_3)`$.
+
+XXXX
 
 - Three steps: Normalize, Merge, Propagate
 
