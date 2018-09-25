@@ -57,21 +57,34 @@ B> similar names from OpenCorporates
 
 It seems that rows 1 and 2 refer to the same person, whereas row 3 refers to a different person. How do we know? More importantly, how do we make the computer know this?
 
-This problem is known as __entity resolution__, record linkage or deduplication. (It is different from _named entity recognition_, where you have to recognize entities in flow text.) It is as complicated as it looks. Names and other fields are misspelled, so if you are too strict, you fail to link two related observations. If you are too fuzzy, you mistakenly link unrelated observations.
+This problem is known as __entity resolution__ (ER), record linkage, deduplication, or fuzzy matching. (It is different from _named entity recognition_, where you have to recognize entities in flow text.) It is as complicated as it looks. Names and other fields are misspelled, so if you are too strict, you fail to link two related observations. If you are too fuzzy, you mistakenly link unrelated observations.
 
 D> I feel like "variable" is not the right term. Nothing varies. Maybe stick to "field" throughout? How about "record" vs "observation"?
 
 The first guiding principle of entity resolution is to embrace the imperfections. There is no perfect method, you are just balancing two types of error. _False positives_ occur when you link two observations that, in reality, refer to two different entities. _False negatives_ occur when you fail to link two observations that, in reality, represent the same entity. You can always decrease one type of error at the expense of the other by selecting a more or less stringent matching method.
 
-The second guiding principle is to appreciate the computational complexity. If you are unsure about your data, you have to compare every observation with every other, making _N_(_N_-1)/2 comparisons in a dataset with _N_ observations. It is easy to see.... (See box on why it is sufficient to make _pairwise_ comparisons.)
+The second guiding principle is to appreciate the computational complexity. If you are unsure about your data, you have to compare every observation with every other, making `N(N-1)/2`$ comparisons in a dataset with `N`$ observations. (See box on why it is sufficient to make _pairwise_ comparisons.) In a large dataset this becomes prohibitively many comparisons. For example, if you want to deduplicate users from a dataset with 100,000 observations (a small dataset), you have to make 10 _billion_ comparisons. Throughout the ER process, you should be looking for ways to reduce the number of necessary comparisons.
 
 A> ## Methods aside
-A> An entity resolution defines groups of observations that belong to the same entity: `e={o1,o2,o3,...}`. Maybe surprisingly, it is sufficient to define when a _pair of observations_ denote the same entity, when `e(o1)=e(o2)`. Because equality is _transitive_, we can propagate the pairwise relation to the entire dataset: if `e(o1)=e(o2)` and `e(o2)=e(o3)` then `e(o1)=e(o3)` and `e={o1,o2,o3}`.
+A> An entity resolution defines groups of observations that belong to the same entity: `e=\{o_1,o_2,o_3,...\}`$. Maybe surprisingly, it is sufficient to define when a _pair of observations_ denote the same entity, when `e(o_1)=e(o_2)`$. Because equality is _transitive_, we can propagate the pairwise relation to the entire dataset: if `e(o_1)=e(o_2)`$ and `e(o_2)=e(o_3)`$ then `e(o_1)=e(o_3)`$ and `e=\{o_1,o_2,o_3\}`$.
 A>
-A> With fuzzy matching, we cannot tell precisely whether the entities behind two observations are _equal_. We can just calculate a _distance_ between the two observations, `d(o1,o2)>=0`. The problem with this is that distances are not transitive: if `o1` and `o2` are "very close" and so are `o2` and `o3`, that does not make `o1` and `o3` "very close." We have the _triangle inequality_, `d(o_1,o_3)\le d(o_1,o_2)+d(o_2,o_3)`$.
+A> With fuzzy matching, we cannot tell precisely whether the entities behind two observations are _equal_. We can just calculate a _distance_ between the two observations, `d(o_1,o_2)\ge 0`$. The problem with this is that distances are not transitive: if `o_1`$ and `o_2`$ are "very close" and so are `o_2`$ and `o_3`$, that does not make `o_1`$ and `o_3`$ "very close." We have the _triangle inequality_, `d(o_1,o_3)\le d(o_1,o_2)+d(o_2,o_3)`$, but this is much weaker than transitivity. 
+A>
+A> The goal of fuzzy matching is to transform a distance into an equality relation. For example, `e(o_1)=e(o_2)`$ whenever `d(o_1,o_2)\le D`$ is a simple formula to use. But beware of being too fuzzy: when `D`$ is too big, you can end up linking observations that are very different. For example, if you allow for a _Levenshtein distance_ of 2 between a pair of words, you will find that
+`book` `=` `back` `=` `hack` `=` `hacker`. I bet you didn't believe `book=hacker`.
 
-XXXX
+D> Style question for editor: when do I use "you" vs "we"? How do I mix?
 
-- Three steps: Normalize, Merge, Propagate
+The three steps to efficient ER are to Normalize, Merge, and Propagate.
 
+1. First you _normalize_ your data by eliminating typos, alternative spellings, to bring the data to a more structured, more comparable format. For example, a name "Dr Charles Jones III" may be normalized to "jones, charles." Normalization can give you a lot of efficiency because your comparisons in the next step will be much easier. However, this is also where you can loose the most information if you are over-normalizing. If there is a canonical way to represent the information in your observations, use that. For example, the US Postal Services standardizes US addresses (see figure) and [provides an API](https://www.usps.com/business/web-tools-apis/address-information-api.htm) to do that.
+2. Then you _merge_ pairs of observations which are close enough according to your metric. The metric can allow for typos, such as a Levenshtein distance. It can rely on multiple fields such as name, address, phone number, date of birth. You can assign weights to each of these fields: matching on phone number may carry a large weight than matching on name. You can also opt for a _decision tree_: only check the date of birth and phone number for very common names, for example. 
 
+To minimize the number of comparisons, you typically only evaluate _potential matches_. This is where normalization can be helpful, as you only need to compare observations with normalized names of "jones, charles," for example.
+
+3. _Propagate._ 
+
+![](images/usps-standardize-address.png)
+
+- Distance metrics
+- Training your ER with ML
