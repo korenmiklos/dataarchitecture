@@ -43,6 +43,7 @@
 	- RDBMS
 	- Distributed data stores. Sharding.
 11. Appendix
+	- Data structures: list, set, dictionary, table (data frame), tree
 	- SQL
 	- O(n) notation
 	- Tools

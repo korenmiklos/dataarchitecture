@@ -57,7 +57,7 @@ B> similar names from OpenCorporates
 
 It seems that rows 1 and 2 refer to the same person, whereas row 3 refers to a different person. How do we know? More importantly, how do we make the computer know this?
 
-This problem is known as __entity resolution__ (ER), record linkage, deduplication, or fuzzy matching. (It is different from _named entity recognition_, where you have to recognize entities in flow text.) It is as complicated as it looks. Names and other fields are misspelled, so if you are too strict, you fail to link two related observations. If you are too fuzzy, you mistakenly link unrelated observations.
+This problem is known as __entity resolution__ (ER), a.k.a. record linkage, deduplication, or fuzzy matching. (It is different from _named entity recognition_, where you have to recognize entities in flow text.) It is as complicated as it looks. Names and other fields are misspelled, so if you are too strict, you fail to link two related observations. If you are too fuzzy, you mistakenly link unrelated observations.
 
 D> I feel like "variable" is not the right term. Nothing varies. Maybe stick to "field" throughout? How about "record" vs "observation"?
 
@@ -71,20 +71,37 @@ A>
 A> With fuzzy matching, we cannot tell precisely whether the entities behind two observations are _equal_. We can just calculate a _distance_ between the two observations, `d(o_1,o_2)\ge 0`$. The problem with this is that distances are not transitive: if `o_1`$ and `o_2`$ are "very close" and so are `o_2`$ and `o_3`$, that does not make `o_1`$ and `o_3`$ "very close." We have the _triangle inequality_, `d(o_1,o_3)\le d(o_1,o_2)+d(o_2,o_3)`$, but this is much weaker than transitivity. 
 A>
 A> The goal of fuzzy matching is to transform a distance into an equality relation. For example, `e(o_1)=e(o_2)`$ whenever `d(o_1,o_2)\le D`$ is a simple formula to use. But beware of being too fuzzy: when `D`$ is too big, you can end up linking observations that are very different. For example, if you allow for a _Levenshtein distance_ of 2 between a pair of words, you will find that
-`book` `=` `back` `=` `hack` `=` `hacker`. I bet you didn't believe `book=hacker`.
+`book` `=` `back` `=` `hack` `=` `hacker`. I bet you didn't believe `book` `=` `hacker`.
 
 D> Style question for editor: when do I use "you" vs "we"? How do I mix?
 
-The three steps to efficient ER are to Normalize, Merge, and Propagate.
+The three steps to efficient ER are to Normalize, Match, and Merge.
 
-1. First you _normalize_ your data by eliminating typos, alternative spellings, to bring the data to a more structured, more comparable format. For example, a name "Dr Charles Jones III" may be normalized to "jones, charles." Normalization can give you a lot of efficiency because your comparisons in the next step will be much easier. However, this is also where you can loose the most information if you are over-normalizing. If there is a canonical way to represent the information in your observations, use that. For example, the US Postal Services standardizes US addresses (see figure) and [provides an API](https://www.usps.com/business/web-tools-apis/address-information-api.htm) to do that.
-2. Then you _merge_ pairs of observations which are close enough according to your metric. The metric can allow for typos, such as a Levenshtein distance. It can rely on multiple fields such as name, address, phone number, date of birth. You can assign weights to each of these fields: matching on phone number may carry a large weight than matching on name. You can also opt for a _decision tree_: only check the date of birth and phone number for very common names, for example. 
+First you __normalize__ your data by eliminating typos, alternative spellings, to bring the data to a more structured, more comparable format. For example, a name "Dr Charles Jones III" may be normalized to "jones, charles." Normalization can give you a lot of efficiency because your comparisons in the next step will be much easier. However, this is also where you can loose the most information if you are over-normalizing. 
 
-To minimize the number of comparisons, you typically only evaluate _potential matches_. This is where normalization can be helpful, as you only need to compare observations with normalized names of "jones, charles," for example.
+Normalization (a.k.a. standardization) is a function that maps your observation to a simpler (often text) representation. During a normalization, you only use one observation and do not compare it to any other observation. That comes later. You can compare to (short) _white lists_, though. For example, if your observations represent cities, it is useful to compare the `city_name` field to a list of known cities and correct typos. You can also convert text fields to lower case, drop punctuation and _stop words_, round or bin numerical values.
 
-3. _Propagate._ 
+If there is a canonical way to represent the information in your observations, use that. For example, the US Postal Services standardizes US addresses (see figure) and [provides an API](https://www.usps.com/business/web-tools-apis/address-information-api.htm) to do that. 
 
 ![](images/usps-standardize-address.png)
 
+Then you __match__ pairs of observations which are close enough according to your metric. The metric can allow for typos, such as a _Levenshtein distance_. It can rely on multiple fields such as name, address, phone number, date of birth. You can assign weights to each of these fields: matching on phone number may carry a large weight than matching on name. You can also opt for a _decision tree_: only check the date of birth and phone number for very common names, for example.
+
+To minimize the number of comparisons, you typically only evaluate _potential matches_. This is where normalization can be helpful, as you only need to compare observations with normalized names of "jones, charles," or those within the same city, for example.
+
 - Distance metrics
-- Training your ER with ML
+
+Once you matched related observations, you have to __merge__ the information they provide about the entity they represent. For examples, if you are matching "Dr Charles Jones" and "Charles Jones," you have to decide whether the person is indeed a "Dr" and whether you are keeping that information. The merge step involves aggregating information from the individual observations with whatever aggregation function you feel appropriate. You can fill in missing fields (if, say, you find the phone number for Charles Jones in one observation, use it throughout), use the most complete text representation (such as "Dr Charles Jones III"), or simply keep all the variants of a field (by creating a _set_ of name variants, for example, {"Charles Jones", "Dr Charles Jones", "Dr Charles Jones III"}). 
+
+- Tools for ER?
+
+## Glossary
+
+Levenshtein distance
+: A metric based on _edit distance_: how many characters do you have to edit to get from text1 to text2?
+stop word
+: A word that is appears too frequently to provide meaningful information. For example, "the," "a," "and."
+UUID
+: Universally unique identifier. A computer-generated identifier that is guaranteed to be different for different records.
+white list
+: A list of allowed expressions, such as valid first names, city names, country names.

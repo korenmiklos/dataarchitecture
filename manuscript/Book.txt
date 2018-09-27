@@ -1,2 +1,3 @@
 05-observations.md
+06-serialization.md
 09-keys.md

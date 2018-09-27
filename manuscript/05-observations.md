@@ -108,3 +108,15 @@ Whereas points in space can easily be represented by just two numbers, richer sp
 D> Too mcuh implementation detail here? We have not even studied JSON.
 
 ## Network
+
+## Glossary
+classification
+: A hierarchical family of groups.
+geocoding
+: Converting textual addresses to a pair of geocoordinates.
+projection (GIS)
+: Formula to represent points on the surface of Earth with two coordinates. WGS84 is most widely used.
+time spell
+: An interval in time, such as `2018-09-16`..`2018-09-30`.
+time stamp
+: A point in time, such as `2018-09-16T12:10Z`.
