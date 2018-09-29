@@ -1,0 +1,5 @@
+     121    2176   13984 manuscript/05-observations.md
+      43     374    2236 manuscript/06-serialization.md
+     106    1910   12067 manuscript/09-keys.md
+       1      15      90 manuscript/glossary.md
+     271    4475   28377 total

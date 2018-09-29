@@ -5,6 +5,7 @@
 2. Data in the wild vs data conforming to business logic
 	- Data warehouses vs data lakes
 	- The fallacy of schema free data
+	- Schemas and metadata
 3. Data modeling for business logic
 	- Entity modeling
 	- Basics of relational data
@@ -22,6 +23,7 @@
 	- There is no such thing as plain text
 	- RDBMS
 	- Document stores?
+	- columnar db?
 	- The benefits of flat files
 7. Common data operations
 	- Speaking SQL

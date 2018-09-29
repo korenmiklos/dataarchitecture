@@ -22,6 +22,11 @@ A> hash functions.
 
 - set
 - tree
+- table
+
+A __table__ (a.k.a. dataframe, dataset)
+
+An __array__ ()
 
 ## Serialization
 
