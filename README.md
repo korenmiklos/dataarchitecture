@@ -23,7 +23,10 @@
 	- There is no such thing as plain text
 	- RDBMS
 	- Document stores?
-	- columnar db?
+	- Columnar storage
+		- Columnar DBs
+		- Parquet and Arrow
+	- streaming
 	- The benefits of flat files
 7. Common data operations
 	- Speaking SQL
